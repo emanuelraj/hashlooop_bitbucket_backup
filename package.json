@@ -1,0 +1,23 @@
+{
+  "name": "hashlooop",
+  "version": "1.0.0",
+  "description": "hashpool_V1",
+  "main": "index.js",
+  "scripts": {
+    "test": "hashlooop"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://EmanuelRaj@bitbucket.org/EmanuelRaj/hashlooop-backend.git"
+  },
+  "keywords": [
+    "hashlooop"
+  ],
+  "author": "Allen and Mathan",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/EmanuelRaj/hashlooop-backend#readme",
+  "dependencies": {
+    "express": "^4.13.3",
+    "socket.io": "^1.3.7"
+  }
+}
