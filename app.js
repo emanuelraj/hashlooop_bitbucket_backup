@@ -13,33 +13,18 @@ var mysql = require('mysql'),
     port: 3306
   });
   
-app.get('/', function(req, res){
+/* app.get('/', function(req, res){
   res.sendfile('index.html');
 });
-
+ */
 
 io.on('connection', function(socket){
-/* 	  socket.emit('news', { hello: 'world' });
-	  socket.on('my other event', function (data) {
-		console.log(data);
-	  });
- */  
 	socket.on('new_registration', function (data) {
-		//console.log("Testing");
-		//console.log(socket.id);
-		//console.log("New registration",data);
-		console.log("Id",socket.id);
-		//data.socket_session_id = socket.id;
+		
 		userRegistration(JSON.parse(data), socket.id);
 	});
-	socket.on('response', function (data) {
-		//console.log("Testing");
-		//console.log(socket.id);
-		console.log("Response",data);
-		//console.log("Id",JSON.parse(data));
-		//data.socket_session_id = socket.id;
-	});
 	
+	connectionsArray.push(socket);
 });
 
 http.listen(3000, function(){
