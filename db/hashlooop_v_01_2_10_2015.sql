@@ -77,7 +77,7 @@ CREATE TABLE IF NOT EXISTS `likes` (
   `id` bigint(11) NOT NULL AUTO_INCREMENT,
   `status_id` bigint(11) NOT NULL,
   `like_type` bigint(11) NOT NULL,
-  `like_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `like_date` TIMESTAMP ,
   `created_at` TIMESTAMP ,
   `modified_at` TIMESTAMP ,
   PRIMARY KEY (`id`),
