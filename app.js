@@ -7,7 +7,7 @@ var mysql = require('mysql'),
   connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-	password: '',
+	password: 'h@shl000p',
  //   password: 'root',
     database: 'hashlooop',
     port: 3306
@@ -27,8 +27,8 @@ io.on('connection', function(socket){
 	connectionsArray.push(socket);
 });
 
-http.listen(3000, function(){
-  console.log('listening on *:3000');
+http.listen(80, function(){
+  console.log('listening on *:80');
 });
 
 
