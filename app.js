@@ -27,8 +27,8 @@ io.on('connection', function(socket){
 	connectionsArray.push(socket);
 });
 
-http.listen(3000, function(){
-  console.log('listening on *:3000');
+http.listen(3389, function(){
+  console.log('listening on *:3389');
 });
 
 
