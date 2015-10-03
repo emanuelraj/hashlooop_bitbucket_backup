@@ -13,10 +13,9 @@ var mysql = require('mysql'),
     port: 3306
   });
   
-/* app.get('/', function(req, res){
+app.get('/', function(req, res){
   res.sendfile('index.html');
 });
- */
 
 io.on('connection', function(socket){
 	socket.on('new_registration', function (data) {
