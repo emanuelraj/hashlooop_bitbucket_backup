@@ -7,8 +7,8 @@ var mysql = require('mysql'),
   connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-	password: 'h@shl000p',
-//    password: '',
+//	password: 'h@shl000p',
+    password: '',
     database: 'hashlooop',
     port: 3306
   });
@@ -23,7 +23,7 @@ io.on('connection', function(socket){
 		userRegistration(JSON.parse(data), socket.id);
 	});
 	
-	socket.on('update_user_location', function (data) {
+	socket.on('fetch_feed_looops', function (data) {
 		updateUserLocation(JSON.parse(data), socket.id);
 	});
 	
