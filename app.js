@@ -13,13 +13,12 @@ var mysql = require('mysql'),
     port: 3306
   });
   
-app.get('/', function(req, res){
-  res.sendfile('index.html');
-});
 
 io.on('connection', function(socket){
+	socket.on('test_connection', function (data) {
+		io.to(socket.id).emit('connection_response', {message: "Connection Established Successfully!!"});
+	});
 	socket.on('new_registration', function (data) {
-		
 		userRegistration(JSON.parse(data), socket.id);
 	});
 	
