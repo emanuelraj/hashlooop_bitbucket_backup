@@ -27,6 +27,10 @@ io.on('connection', function(socket){
 		updateUserLocation(JSON.parse(data), socket.id);
 	});
 	
+	socket.on('new_status', function (data) {
+		newStatus(JSON.parse(data), socket.id);
+	});
+	
 	connectionsArray.push(socket);
 });
 
@@ -85,5 +89,38 @@ userRegistration = function(data, socket_session_id){
 
 updateUserLocation = function(data, socket_session_id){
 	var update_location = connection.query('update users set `current_location_latitude` = '+data.latitude+', `current_location_longitude` = '+data.longitude+', `socket_session_id` =  "'+socket_session_id+'" where id = "'+data.user_id+'"');
-	io.to(socket_session_id).emit('location_update', {status : 1, message: "Location Updated Successfully", user_id: data.user_id});
+	//SELECT id, ( 3959 * acos( cos( radians(10.9954968) ) * cos( radians( status_location_latitude ) ) * cos( radians( status_location_longitude ) - radians(76.9571046) ) + sin( radians(10.9954968) ) * sin( radians( status_location_latitude ) ) ) ) AS distance FROM status HAVING distance < 9
+	
+	//io.to(socket_session_id).emit('location_update', {status : 1, message: "Location Updated Successfully", user_id: data.user_id});
+	
+	var status_in_that_location = connection.query('SELECT id, user_id, status, ( 3959 * acos( cos( radians('+data.latitude+') ) * cos( radians( status_location_latitude ) ) * cos( radians( status_location_longitude ) - radians('+data.longitude+') ) + sin( radians('+data.latitude+') ) * sin( radians( status_location_latitude ) ) ) ) AS distance FROM status HAVING distance < 20');
+	all_status = []; // this array will contain the result of our db query
+
+	status_in_that_location
+	.on('error', function(err) {
+		console.log(err);
+	})
+	.on('result', function(status) {
+		all_status.push(status);
+	})
+	.on('end', function() {
+		io.to(socket_session_id).emit('status_in_that_location', {status : 1, message: "Status Retrived Successfully", status: all_status});
+	});
+}
+
+newStatus = function(data, socket_session_id){
+	var insert_new_status = connection.query('insert into status (`user_id`, `status_type`, `status`, `status_location_latitude`, `status_location_longitude`) values ('+data.user_id+', "1", "'+data.status+'", "'+data.latitude+'", "'+data.longitude+'")');
+	status_id = [];
+	insert_new_status
+	.on('error', function(err) {
+		console.log(err);
+	})
+	.on('result', function(status) {
+		//console.log(user);
+		status_id.push(status.insertId);
+	})
+	.on('end', function() {
+		console.log(socket_session_id);
+		io.to(socket_session_id).emit('status_post_response', {status : 1, message: "Status Posted Successfully", user_id: data.user_id, status_id : status_id[0]});
+	});
 }
