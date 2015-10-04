@@ -23,6 +23,10 @@ io.on('connection', function(socket){
 		userRegistration(JSON.parse(data), socket.id);
 	});
 	
+	socket.on('update_user_location', function (data) {
+		updateUserLocation(JSON.parse(data), socket.id);
+	});
+	
 	connectionsArray.push(socket);
 });
 
@@ -76,4 +80,10 @@ userRegistration = function(data, socket_session_id){
 			});
 		}	
 	});
+}
+
+
+updateUserLocation = function(data, socket_session_id){
+	var update_location = connection.query('update users set `current_location_latitude` = '+data.latitude+', `current_location_longitude` = '+data.longitude+', `socket_session_id` =  "'+socket_session_id+'" where id = "'+data.user_id+'"');
+	io.to(socket_session_id).emit('location_update', {status : 1, message: "Location Updated Successfully", user_id: data.user_id});
 }
