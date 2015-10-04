@@ -27,7 +27,7 @@ io.on('connection', function(socket){
 		updateUserLocation(JSON.parse(data), socket.id);
 	});
 	
-	socket.on('new_status', function (data) {
+	socket.on('new_looop', function (data) {
 		newStatus(JSON.parse(data), socket.id);
 	});
 	
@@ -40,10 +40,6 @@ http.listen(3000, function(){
 
 
 userRegistration = function(data, socket_session_id){
-	console.log("Datas");
-	console.log(data.email);
-	console.log(data.name);
-	console.log(data.password);
 	var check_user = connection.query('select * from users where email = "'+data.email+'"');
 	users = []; // this array will contain the result of our db query
 
@@ -84,53 +80,50 @@ userRegistration = function(data, socket_session_id){
 
 updateUserLocation = function(data, socket_session_id){
 	var update_location = connection.query('update users set `current_location_latitude` = '+data.latitude+', `current_location_longitude` = '+data.longitude+', `socket_session_id` =  "'+socket_session_id+'" where id = "'+data.user_id+'"');
-	//SELECT id, ( 3959 * acos( cos( radians(10.9954968) ) * cos( radians( status_location_latitude ) ) * cos( radians( status_location_longitude ) - radians(76.9571046) ) + sin( radians(10.9954968) ) * sin( radians( status_location_latitude ) ) ) ) AS distance FROM status HAVING distance < 9
-	
-	//io.to(socket_session_id).emit('location_update', {status : 1, message: "Location Updated Successfully", user_id: data.user_id});
 	
 	var looop_in_that_location = connection.query('SELECT id, user_id, status, ( 3959 * acos( cos( radians('+data.latitude+') ) * cos( radians( status_location_latitude ) ) * cos( radians( status_location_longitude ) - radians('+data.longitude+') ) + sin( radians('+data.latitude+') ) * sin( radians( status_location_latitude ) ) ) ) AS distance FROM status HAVING distance < 20');
-	all_status = []; // this array will contain the result of our db query
+	all_looops = []; // this array will contain the result of our db query
 
 	looop_in_that_location
 	.on('error', function(err) {
 		console.log(err);
 	})
-	.on('result', function(status) {
-		all_status.push(status);
+	.on('result', function(loops) {
+		all_looops.push(loops);
 	})
 	.on('end', function() {
-		io.to(socket_session_id).emit('looop_in_that_location', {status : 1, message: "Status Retrived Successfully", status: all_status});
+		io.to(socket_session_id).emit('looop_in_that_location', {status : 1, message: "Looops Retrived Successfully", looops: all_looops});
 	});
 }
 
 newStatus = function(data, socket_session_id){
-	var insert_new_status = connection.query('insert into status (`user_id`, `status_type`, `status`, `status_location_latitude`, `status_location_longitude`) values ('+data.user_id+', "1", "'+data.status+'", "'+data.latitude+'", "'+data.longitude+'")');
-	status_id = [];
-	insert_new_status
+	var insert_new_looops = connection.query('insert into status (`user_id`, `status_type`, `status`, `status_location_latitude`, `status_location_longitude`) values ('+data.user_id+', "1", "'+data.looop+'", "'+data.latitude+'", "'+data.longitude+'")');
+	looops_id = [];
+	insert_new_looops
 	.on('error', function(err) {
 		console.log(err);
 	})
-	.on('result', function(status) {
+	.on('result', function(looops) {
 		//console.log(user);
-		status_id.push(status.insertId);
+		looops_id.push(looops.insertId);
 	})
 	.on('end', function() {
 		console.log(socket_session_id);
-		var broadcast_status_to_all = connection.query('SELECT id, name, socket_session_id, ( 3959 * acos( cos( radians('+data.latitude+') ) * cos( radians( current_location_latitude ) ) * cos( radians( current_location_longitude ) - radians('+data.longitude+') ) + sin( radians('+data.latitude+') ) * sin( radians( current_location_latitude ) ) ) ) AS distance FROM users HAVING distance < 20');
+		var broadcast_looop_to_all = connection.query('SELECT id, name, socket_session_id, ( 3959 * acos( cos( radians('+data.latitude+') ) * cos( radians( current_location_latitude ) ) * cos( radians( current_location_longitude ) - radians('+data.longitude+') ) + sin( radians('+data.latitude+') ) * sin( radians( current_location_latitude ) ) ) ) AS distance FROM users HAVING distance < 20');
 		all_users = []; // this array will contain the result of our db query
 
-		broadcast_status_to_all
+		broadcast_looop_to_all
 		.on('error', function(err) {
 			console.log(err);
 		})
-		.on('result', function(status) {
-			all_users.push(status);
+		.on('result', function(looops) {
+			all_users.push(looops);
 		})
 		.on('end', function() {
 			console.log(all_users.length);
-			io.to(socket_session_id).emit('looop_success', {status : 1, message: "Status Posted Successfully"});
+			io.to(socket_session_id).emit('looop_success', {status : 1, message: "Looops Posted Successfully"});
 			for(var i = 0; i < all_users.length; i++){
-				io.to(all_users[i].socket_session_id).emit('looop_post_notification', {status : 1, message: "Status Posted Successfully", sataus_user_id: data.user_id, status_id : status_id[0], status: data.status });
+				io.to(all_users[i].socket_session_id).emit('looop_post_notification', {status : 1, message: "New Looop Data", looop_user_id: data.user_id, looop_id : looops_id[0], looop: data.looop });
 			}	
 		});
 	});
