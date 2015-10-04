@@ -8,7 +8,7 @@ var mysql = require('mysql'),
     host: 'localhost',
     user: 'root',
 	password: 'h@shl000p',
- //   password: 'root',
+//    password: '',
     database: 'hashlooop',
     port: 3306
   });
@@ -18,6 +18,7 @@ io.on('connection', function(socket){
 	socket.on('test_connection', function (data) {
 		io.to(socket.id).emit('connection_response', {message: "Connection Established Successfully!!"});
 	});
+	
 	socket.on('new_registration', function (data) {
 		userRegistration(JSON.parse(data), socket.id);
 	});
@@ -69,7 +70,7 @@ userRegistration = function(data, socket_session_id){
 				//getListOfUsers(data, socket_session_id, user_id[0]);
 				console.log(socket_session_id);
 				//io.emit('news', { hello: 'world' });
-				io.to(socket_session_id).emit('registration_response', {status : 1, message: "Registered Successfully", user_id: user_id});
+				io.to(socket_session_id).emit('registration_response', {status : 1, message: "Registered Successfully", user_id: user_id[0]});
 				//io.to(socket_session_id).emit('registration_response', { message:"Registered Successfully"});
 				//io.sockets.socket(socket_session_id).emit('registration_response', { message:"Registered Successfully"});
 			});
