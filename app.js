@@ -121,6 +121,22 @@ newStatus = function(data, socket_session_id){
 	})
 	.on('end', function() {
 		console.log(socket_session_id);
-		io.to(socket_session_id).emit('status_post_response', {status : 1, message: "Status Posted Successfully", user_id: data.user_id, status_id : status_id[0]});
+		var broadcast_status_to_all = connection.query('SELECT id, name, socket_session_id, ( 3959 * acos( cos( radians('+data.latitude+') ) * cos( radians( current_location_latitude ) ) * cos( radians( current_location_longitude ) - radians('+data.longitude+') ) + sin( radians('+data.latitude+') ) * sin( radians( current_location_latitude ) ) ) ) AS distance FROM users HAVING distance < 20');
+		all_users = []; // this array will contain the result of our db query
+
+		broadcast_status_to_all
+		.on('error', function(err) {
+			console.log(err);
+		})
+		.on('result', function(status) {
+			all_users.push(status);
+		})
+		.on('end', function() {
+			console.log(all_users.length);
+			io.to(socket_session_id).emit('status_success', {status : 1, message: "Status Posted Successfully"});
+			for(var i = 0; i < all_users.length; i++){
+				io.to(all_users[i].socket_session_id).emit('status_post_notification', {status : 1, message: "Status Posted Successfully", sataus_user_id: data.user_id, status_id : status_id[0], status: data.status });
+			}	
+		});
 	});
 }
