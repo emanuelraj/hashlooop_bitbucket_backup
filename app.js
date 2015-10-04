@@ -71,16 +71,11 @@ userRegistration = function(data, socket_session_id){
 				console.log(err);
 			})
 			.on('result', function(user) {
-				//console.log(user);
 				user_id.push(user.insertId);
 			})
 			.on('end', function() {
-				//getListOfUsers(data, socket_session_id, user_id[0]);
 				console.log(socket_session_id);
-				//io.emit('news', { hello: 'world' });
 				io.to(socket_session_id).emit('registration_response', {status : 1, message: "Registered Successfully", user_id: user_id[0]});
-				//io.to(socket_session_id).emit('registration_response', { message:"Registered Successfully"});
-				//io.sockets.socket(socket_session_id).emit('registration_response', { message:"Registered Successfully"});
 			});
 		}	
 	});
@@ -93,10 +88,10 @@ updateUserLocation = function(data, socket_session_id){
 	
 	//io.to(socket_session_id).emit('location_update', {status : 1, message: "Location Updated Successfully", user_id: data.user_id});
 	
-	var status_in_that_location = connection.query('SELECT id, user_id, status, ( 3959 * acos( cos( radians('+data.latitude+') ) * cos( radians( status_location_latitude ) ) * cos( radians( status_location_longitude ) - radians('+data.longitude+') ) + sin( radians('+data.latitude+') ) * sin( radians( status_location_latitude ) ) ) ) AS distance FROM status HAVING distance < 20');
+	var looop_in_that_location = connection.query('SELECT id, user_id, status, ( 3959 * acos( cos( radians('+data.latitude+') ) * cos( radians( status_location_latitude ) ) * cos( radians( status_location_longitude ) - radians('+data.longitude+') ) + sin( radians('+data.latitude+') ) * sin( radians( status_location_latitude ) ) ) ) AS distance FROM status HAVING distance < 20');
 	all_status = []; // this array will contain the result of our db query
 
-	status_in_that_location
+	looop_in_that_location
 	.on('error', function(err) {
 		console.log(err);
 	})
@@ -104,7 +99,7 @@ updateUserLocation = function(data, socket_session_id){
 		all_status.push(status);
 	})
 	.on('end', function() {
-		io.to(socket_session_id).emit('status_in_that_location', {status : 1, message: "Status Retrived Successfully", status: all_status});
+		io.to(socket_session_id).emit('looop_in_that_location', {status : 1, message: "Status Retrived Successfully", status: all_status});
 	});
 }
 
@@ -133,9 +128,9 @@ newStatus = function(data, socket_session_id){
 		})
 		.on('end', function() {
 			console.log(all_users.length);
-			io.to(socket_session_id).emit('status_success', {status : 1, message: "Status Posted Successfully"});
+			io.to(socket_session_id).emit('looop_success', {status : 1, message: "Status Posted Successfully"});
 			for(var i = 0; i < all_users.length; i++){
-				io.to(all_users[i].socket_session_id).emit('status_post_notification', {status : 1, message: "Status Posted Successfully", sataus_user_id: data.user_id, status_id : status_id[0], status: data.status });
+				io.to(all_users[i].socket_session_id).emit('looop_post_notification', {status : 1, message: "Status Posted Successfully", sataus_user_id: data.user_id, status_id : status_id[0], status: data.status });
 			}	
 		});
 	});
