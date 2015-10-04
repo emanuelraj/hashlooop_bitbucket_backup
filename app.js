@@ -7,8 +7,8 @@ var mysql = require('mysql'),
   connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-//	password: 'h@shl000p',
-    password: '',
+	password: 'h@shl000p',
+//    password: '',
     database: 'hashlooop',
     port: 3306
   });
