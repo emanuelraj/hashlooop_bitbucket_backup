@@ -23,6 +23,12 @@ io.on('connection', function(socket){
 		userRegistration(JSON.parse(data), socket.id);
 	});
 	
+	socket.on('login', function(data){
+		data.socket_session_id = socket.id;
+		userLogin(JSON.parse(data), socket.id);
+	});
+	
+	
 	socket.on('fetch_feed_looops', function (data) {
 		updateUserLocation(JSON.parse(data), socket.id);
 	});
@@ -73,6 +79,38 @@ userRegistration = function(data, socket_session_id){
 				console.log(socket_session_id);
 				io.to(socket_session_id).emit('registration_response', {status : 1, message: "Registered Successfully", user_id: user_id[0]});
 			});
+		}	
+	});
+}
+
+userLogin = function(data,socket_session_id){
+	console.log(data.email);
+	console.log(data.password);
+	var check_login = connection.query('select name,email,password,id from users where email ="'+data.email+'"');
+	users = []; // this array will contain the result of our db query
+
+	check_login
+	.on('error', function(err) {
+		console.log(err);
+	})
+	.on('result', function(user) {
+		users.push(user);
+	})
+	.on('end', function() {
+		console.log(users.length);
+		var md5sum = crypto.createHash('md5');
+		var hashed_password = data.password;
+		hashed_password = md5sum.update(hashed_password);
+		hashed_password = md5sum.digest('hex');
+		console.log(hashed_password);
+		console.log(users[0].password);
+		if(hashed_password == users[users.length - 1].password){
+			console.log({status : 1, message: "Logged in Successfully!!",  user_id : users[users.length - 1].id});
+			io.to(socket_session_id).emit('login_response',
+			{status : 1, message: "Logged in Successfully!!",  user_id : users[users.length - 1].id});
+		}else{
+			io.to(socket_session_id).emit('login_response', {status : 0,
+			message: "Username or Password Wrong!!"});
 		}	
 	});
 }
