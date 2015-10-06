@@ -7,8 +7,8 @@ var mysql = require('mysql'),
   connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-	password: 'h@shl000p',
-//    password: '',
+//	password: 'h@shl000p',
+    password: '',
     database: 'hashlooop',
     port: 3306
   });
@@ -35,6 +35,10 @@ io.on('connection', function(socket){
 	
 	socket.on('new_looop', function (data) {
 		newStatus(JSON.parse(data), socket.id);
+	});
+	
+	socket.on('like_looops', function (data) {
+		newLike(JSON.parse(data), socket.id);
 	});
 	
 	connectionsArray.push(socket);
@@ -164,5 +168,39 @@ newStatus = function(data, socket_session_id){
 				io.to(all_users[i].socket_session_id).emit('looop_post_notification', {status : 1, message: "New Looop Data", looop_user_id: data.user_id, looop_id : looops_id[0], looop: data.looop });
 			}	
 		});
+	});
+}
+
+newLike = function(data, socket_session_id){
+	var check_user = connection.query('select * from likes where status_id = '+data.looop_id+' and user_id = '+data.user_id+'');
+	users = []; // this array will contain the result of our db query
+
+	check_user
+	.on('error', function(err) {
+		console.log(err);
+	})
+	.on('result', function(user) {
+		users.push(user);
+	})
+	.on('end', function() {
+		console.log(users.length);
+		console.log(socket_session_id);
+		if(users.length > 0){		
+			io.to(socket_session_id).emit('like_response', {status : 0, message: "Looop Already Liked"});
+		}else{
+			var insert_new_likes = connection.query('insert into likes (`status_id`, `user_id`, `like_type`) values ('+data.looop_id+', '+data.user_id+', 1)');
+			like_id = [];
+			insert_new_likes
+			.on('error', function(err) {
+				console.log(err);
+			})
+			.on('result', function(like) {
+				like_id.push(like.insertId);
+			})
+			.on('end', function() {
+				console.log(socket_session_id);
+				io.to(socket_session_id).emit('like_response', {status : 1, message: "Successfully Liked"});
+			});
+		}
 	});
 }
