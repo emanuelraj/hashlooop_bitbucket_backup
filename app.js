@@ -7,8 +7,8 @@ var mysql = require('mysql'),
   connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-//	password: 'h@shl000p',
-    password: '',
+	password: 'h@shl000p',
+//    password: '',
     database: 'hashlooop',
     port: 3306
   });
@@ -186,7 +186,7 @@ newLike = function(data, socket_session_id){
 		console.log(users.length);
 		console.log(socket_session_id);
 		if(users.length > 0){		
-			io.to(socket_session_id).emit('like_response', {status : 0, message: "Looop Already Liked"});
+			io.to(socket_session_id).emit('like_response', {status : 1, message: "Successfully Liked"});
 		}else{
 			var insert_new_likes = connection.query('insert into likes (`status_id`, `user_id`, `like_type`) values ('+data.looop_id+', '+data.user_id+', 1)');
 			like_id = [];
