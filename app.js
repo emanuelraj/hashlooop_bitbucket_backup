@@ -33,6 +33,13 @@ io.on('connection', function(socket){
 		updateUserLocation(JSON.parse(data), socket.id);
 	});
 	
+	socket.on('socket_reconnect', function (data) {
+		data = JSON.parse(data);
+		var update_socket = connection.query('update users set `socket_session_id` =  "'+socket.id+'" where id = "'+data.user_id+'"');
+		io.to(socket.id).emit('socket_reconnect_status', {status : 1, message: "Socket Reconnected Successfully"});
+	});
+	
+	
 	socket.on('fetch_trending_looops', function (data){
 		updateTrendingLooops(JSON.parse(data), socket.id);
 	});
@@ -43,6 +50,10 @@ io.on('connection', function(socket){
 	
 	socket.on('like_looops', function (data) {
 		newLike(JSON.parse(data), socket.id);
+	});
+	
+	socket.on('new_follow', function (data) {
+		newFollow(JSON.parse(data), socket.id);
 	});
 	
 	connectionsArray.push(socket);
@@ -130,7 +141,7 @@ updateUserLocation = function(data, socket_session_id){
 	//'+data.user_id+'
 	//SELECT id, user_id, status, ( 3959 * acos( cos( radians('+data.latitude+') ) * cos( radians( status_location_latitude ) ) * cos( radians( status_location_longitude ) - radians('+data.longitude+') ) + sin( radians('+data.latitude+') ) * sin( radians( status_location_latitude ) ) ) ) AS distance FROM status HAVING distance < 20
 	//SELECT stat.id, stat.user_id, user.name, stat.status, if((fol.user_id = stat.user_id and fol.following_id = '+data.user_id+'), 1, 0) AS relationship, ( 3959 * acos( cos( radians('+data.latitude+') ) * cos( radians( status_location_latitude ) ) * cos( radians( status_location_longitude ) - radians('+data.longitude+') ) + sin( radians('+data.latitude+') ) * sin( radians( status_location_latitude ) ) ) ) AS distance FROM status as stat LEFT JOIN following_mapping as fol on fol.user_id = stat.user_id LEFT JOIN users as user on user.id = stat.user_id
-	var looop_in_that_location = connection.query('SELECT stat.id, stat.user_id, user.name, stat.status, if((fol.user_id = stat.user_id and fol.following_id = '+data.user_id+'), 1, 0) AS relationship, ( 3959 * acos( cos( radians('+data.latitude+') ) * cos( radians( status_location_latitude ) ) * cos( radians( status_location_longitude ) - radians('+data.longitude+') ) + sin( radians('+data.latitude+') ) * sin( radians( status_location_latitude ) ) ) ) AS distance FROM status as stat LEFT JOIN following_mapping as fol on fol.user_id = stat.user_id LEFT JOIN users as user on user.id = stat.user_id');
+	var looop_in_that_location = connection.query('SELECT stat.id, stat.user_id, user.name, stat.status, if((fol.user_id = stat.user_id and fol.following_id = '+data.user_id+'), true, false) AS relationship, ( 3959 * acos( cos( radians('+data.latitude+') ) * cos( radians( status_location_latitude ) ) * cos( radians( status_location_longitude ) - radians('+data.longitude+') ) + sin( radians('+data.latitude+') ) * sin( radians( status_location_latitude ) ) ) ) AS distance FROM status as stat LEFT JOIN following_mapping as fol on fol.user_id = stat.user_id LEFT JOIN users as user on user.id = stat.user_id');
 	all_looops = []; // this array will contain the result of our db query
 
 	looop_in_that_location
@@ -256,5 +267,21 @@ function updateTrendingLooops(data, socket_session_id){
 	})
 	.on('end', function() {
 		io.to(socket_session_id).emit('trending_looop_in_that_location', {status : 1, message: "Looops Retrived Successfully", looops: all_looops});
+	});
+}
+
+function newFollow(data, socket_session_id){
+	var insert_new_follow = connection.query('insert into following_mapping (`user_id`, `following_id`) values ('+data.user_id+', '+data.following_id+')');
+	new_follow_id = [];
+	insert_new_follow
+	.on('error', function(err) {
+		console.log(err);
+	})
+	.on('result', function(follow) {
+		new_follow_id.push(follow.insertId);
+	})
+	.on('end', function() {
+		console.log(socket_session_id);
+		io.to(socket_session_id).emit('follow_response', {status : 1, message: "Followed Successfully"});
 	});
 }
