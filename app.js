@@ -145,34 +145,54 @@ updateUserLocation = function(data, socket_session_id){
 }
 
 newStatus = function(data, socket_session_id){
-	var insert_new_looops = connection.query('insert into status (`user_id`, `status_type`, `status`, `status_location_latitude`, `status_location_longitude`) values ('+data.user_id+', "1", "'+data.looop+'", "'+data.latitude+'", "'+data.longitude+'")');
-	looops_id = [];
-	insert_new_looops
+	
+	//SELECT id, user_id, status, ( 3959 * acos( cos( radians('+data.latitude+') ) * cos( radians( status_location_latitude ) ) * cos( radians( status_location_longitude ) - radians('+data.longitude+') ) + sin( radians('+data.latitude+') ) * sin( radians( status_location_latitude ) ) ) ) AS distance FROM status HAVING distance < 20
+	var check_looops_in_that_location = connection.query('SELECT id, user_id, status, ( 3959 * acos( cos( radians('+data.latitude+') ) * cos( radians( status_location_latitude ) ) * cos( radians( status_location_longitude ) - radians('+data.longitude+') ) + sin( radians('+data.latitude+') ) * sin( radians( status_location_latitude ) ) ) ) AS distance FROM status HAVING distance < 20');
+	all_looops = []; // this array will contain the result of our db query
+
+	check_looops_in_that_location
 	.on('error', function(err) {
 		console.log(err);
 	})
-	.on('result', function(looops) {
-		//console.log(user);
-		looops_id.push(looops.insertId);
+	.on('result', function(loops) {
+		all_looops.push(loops);
 	})
 	.on('end', function() {
-		console.log(socket_session_id);
-		var broadcast_looop_to_all = connection.query('SELECT id, name, socket_session_id, ( 3959 * acos( cos( radians('+data.latitude+') ) * cos( radians( current_location_latitude ) ) * cos( radians( current_location_longitude ) - radians('+data.longitude+') ) + sin( radians('+data.latitude+') ) * sin( radians( current_location_latitude ) ) ) ) AS distance FROM users HAVING distance < 20');
-		all_users = []; // this array will contain the result of our db query
-
-		broadcast_looop_to_all
+		var insert_new_looops = connection.query('insert into status (`user_id`, `status_type`, `status`, `status_location_latitude`, `status_location_longitude`) values ('+data.user_id+', "1", "'+data.looop+'", "'+data.latitude+'", "'+data.longitude+'")');
+		looops_id = [];
+		insert_new_looops
 		.on('error', function(err) {
 			console.log(err);
 		})
 		.on('result', function(looops) {
-			all_users.push(looops);
+			//console.log(user);
+			looops_id.push(looops.insertId);
 		})
 		.on('end', function() {
-			console.log(all_users.length);
-			io.to(socket_session_id).emit('looop_success', {status : 1, message: "Looops Posted Successfully"});
-			for(var i = 0; i < all_users.length; i++){
-				io.to(all_users[i].socket_session_id).emit('looop_post_notification', {status : 1, message: "New Looop Data", looop_user_id: data.user_id, looop_id : looops_id[0], looop: data.looop });
-			}	
+			console.log(socket_session_id);
+			var broadcast_looop_to_all = connection.query('SELECT id, name, socket_session_id, ( 3959 * acos( cos( radians('+data.latitude+') ) * cos( radians( current_location_latitude ) ) * cos( radians( current_location_longitude ) - radians('+data.longitude+') ) + sin( radians('+data.latitude+') ) * sin( radians( current_location_latitude ) ) ) ) AS distance FROM users HAVING distance < 20');
+			all_users = []; // this array will contain the result of our db query
+
+			broadcast_looop_to_all
+			.on('error', function(err) {
+				console.log(err);
+			})
+			.on('result', function(looops) {
+				all_users.push(looops);
+			})
+			.on('end', function() {
+				console.log(all_users.length);
+				if(all_looops.length > 0){
+					io.to(socket_session_id).emit('looop_success', {status : 1, message: "Looops Posted Successfully"});
+				}else{
+					var insert_discoverer_badge = connection.query('insert into badges_mapping (`user_id`, `badge_id`) values ('+data.user_id+', "1")');					
+					io.to(socket_session_id).emit('looop_success', {status : 2, message: "Looops Posted Successfully!! You are the Discoverer of that Location"});
+				}
+				
+				for(var i = 0; i < all_users.length; i++){
+					io.to(all_users[i].socket_session_id).emit('looop_post_notification', {status : 1, message: "New Looop Data", looop_user_id: data.user_id, looop_id : looops_id[0], looop: data.looop });
+				}	
+			});
 		});
 	});
 }
