@@ -8,7 +8,7 @@ var mysql = require('mysql'),
     host: 'localhost',
     user: 'root',
 	password: 'h@shl000p',
- //   password: '',
+//    password: '',
     database: 'hashlooop',
     port: 3306
   });
@@ -126,8 +126,10 @@ userLogin = function(data,socket_session_id){
 
 updateUserLocation = function(data, socket_session_id){
 	var update_location = connection.query('update users set `current_location_latitude` = '+data.latitude+', `current_location_longitude` = '+data.longitude+', `socket_session_id` =  "'+socket_session_id+'" where id = "'+data.user_id+'"');
-	
-	var looop_in_that_location = connection.query('SELECT id, user_id, status, ( 3959 * acos( cos( radians('+data.latitude+') ) * cos( radians( status_location_latitude ) ) * cos( radians( status_location_longitude ) - radians('+data.longitude+') ) + sin( radians('+data.latitude+') ) * sin( radians( status_location_latitude ) ) ) ) AS distance FROM status HAVING distance < 20');
+
+	//'+data.user_id+'
+	//SELECT id, user_id, status, ( 3959 * acos( cos( radians('+data.latitude+') ) * cos( radians( status_location_latitude ) ) * cos( radians( status_location_longitude ) - radians('+data.longitude+') ) + sin( radians('+data.latitude+') ) * sin( radians( status_location_latitude ) ) ) ) AS distance FROM status HAVING distance < 20
+	var looop_in_that_location = connection.query('SELECT stat.id, stat.user_id, stat.status, if((fol.user_id = stat.user_id and fol.following_id = '+data.user_id+'), 1, 0) AS relationship, ( 3959 * acos( cos( radians('+data.latitude+') ) * cos( radians( status_location_latitude ) ) * cos( radians( status_location_longitude ) - radians('+data.longitude+') ) + sin( radians('+data.latitude+') ) * sin( radians( status_location_latitude ) ) ) ) AS distance FROM status as stat LEFT JOIN following_mapping as fol on fol.user_id = stat.user_id');
 	all_looops = []; // this array will contain the result of our db query
 
 	looop_in_that_location
