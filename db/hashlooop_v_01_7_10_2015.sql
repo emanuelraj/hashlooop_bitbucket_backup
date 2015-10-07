@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 07, 2015 at 06:02 PM
+-- Generation Time: Oct 07, 2015 at 06:10 PM
 -- Server version: 5.6.17
 -- PHP Version: 5.5.12
 
@@ -56,14 +56,7 @@ CREATE TABLE IF NOT EXISTS `badges_mapping` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `badge_id` (`badge_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
-
---
--- Dumping data for table `badges_mapping`
---
-
-INSERT INTO `badges_mapping` (`id`, `user_id`, `badge_id`, `created_at`, `modified_at`) VALUES
-(1, 1, 1, '2015-10-07 15:59:08', '0000-00-00 00:00:00');
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -80,14 +73,7 @@ CREATE TABLE IF NOT EXISTS `following_mapping` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `following_id` (`following_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
-
---
--- Dumping data for table `following_mapping`
---
-
-INSERT INTO `following_mapping` (`id`, `user_id`, `following_id`, `created_at`, `modified_at`) VALUES
-(1, 2, 1, '2015-10-07 14:18:49', '0000-00-00 00:00:00');
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -135,22 +121,7 @@ CREATE TABLE IF NOT EXISTS `likes` (
   KEY `status_id` (`status_id`),
   KEY `like_type` (`like_type`),
   KEY `fk_likes_user_id` (`user_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10 ;
-
---
--- Dumping data for table `likes`
---
-
-INSERT INTO `likes` (`id`, `status_id`, `user_id`, `like_type`, `like_date`, `created_at`, `modified_at`) VALUES
-(1, 2, 1, 1, '2015-10-04 18:55:56', '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
-(2, 2, 2, 1, '2015-10-04 18:55:56', '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
-(3, 3, 1, 1, '2015-10-04 18:56:14', '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
-(4, 3, 2, 1, '2015-10-04 18:56:14', '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
-(5, 4, 1, 1, '2015-10-04 18:56:47', '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
-(6, 4, 2, 1, '2015-10-04 18:56:47', '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
-(7, 10, 1, 1, '2015-10-06 20:28:47', '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
-(8, 8, 1, 1, '2015-10-06 20:29:55', '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
-(9, 11, 1, 1, '2015-10-06 20:29:58', '0000-00-00 00:00:00', '0000-00-00 00:00:00');
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -198,15 +169,7 @@ CREATE TABLE IF NOT EXISTS `status` (
   KEY `status_type` (`status_type`),
   KEY `status_mood` (`status_mood`),
   KEY `hashtag` (`hashtag`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
-
---
--- Dumping data for table `status`
---
-
-INSERT INTO `status` (`id`, `user_id`, `status_type`, `status_mood`, `status`, `hashtag`, `status_location_latitude`, `status_location_longitude`, `image_url`, `profile_pic_url`, `created_at`, `modified_at`) VALUES
-(1, 1, 1, NULL, 'Testing First Looop', NULL, 10.991079, 76.963959, NULL, NULL, '2015-10-07 15:59:07', '0000-00-00 00:00:00'),
-(2, 2, 1, NULL, 'Testing 2 looop', NULL, 10.991079, 76.963959, NULL, NULL, '2015-10-07 15:59:25', '0000-00-00 00:00:00');
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -266,15 +229,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `modified_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
-
---
--- Dumping data for table `users`
---
-
-INSERT INTO `users` (`id`, `mobile_number`, `name`, `email`, `password`, `current_location_latitude`, `current_location_longitude`, `socket_session_id`, `following_count`, `follower_count`, `cover_pic_url`, `profile_pic_url`, `created_at`, `modified_at`) VALUES
-(1, '9940700655', 'Allen', 'raju.allen1888@gmail.com', '432a44ddc0aa72ed8c200f53b6268af4', 10.991079, 76.963959, '1a4zMG8pyk2M6P7_AAAE', NULL, NULL, NULL, NULL, '2015-10-07 15:58:50', '0000-00-00 00:00:00'),
-(2, '8867037946', 'Iyrin', 'iyrinjamima810@gmail.com', '7dbc656b53be33f8b884b59a4eadad59', 10.991079, 76.963959, 'ssdjj-m_Fz3Q1aKQAAAF', NULL, NULL, NULL, NULL, '2015-10-07 15:58:59', '0000-00-00 00:00:00');
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
