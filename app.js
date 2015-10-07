@@ -8,7 +8,7 @@ var mysql = require('mysql'),
     host: 'localhost',
     user: 'root',
 	password: 'h@shl000p',
-//    password: '',
+ //   password: '',
     database: 'hashlooop',
     port: 3306
   });
@@ -31,6 +31,10 @@ io.on('connection', function(socket){
 	
 	socket.on('fetch_feed_looops', function (data) {
 		updateUserLocation(JSON.parse(data), socket.id);
+	});
+	
+	socket.on('fetch_trending_looops', function (data){
+		updateTrendingLooops(JSON.parse(data), socket.id);
 	});
 	
 	socket.on('new_looop', function (data) {
@@ -202,5 +206,21 @@ newLike = function(data, socket_session_id){
 				io.to(socket_session_id).emit('like_response', {status : 1, message: "Successfully Liked"});
 			});
 		}
+	});
+}
+
+function updateTrendingLooops(data, socket_session_id){
+	var trending_looop_in_that_location = connection.query('SELECT stat.id as status_id, stat.status as status, stat.user_id as user_id, ( 3959 * acos( cos( radians('+data.latitude+') ) * cos( radians( stat.status_location_latitude ) ) * cos( radians( stat.status_location_longitude ) - radians('+data.longitude+') ) + sin( radians('+data.latitude+') ) * sin( radians( stat.status_location_latitude ) ) ) ) AS distance FROM status as stat LEFT JOIN likes as lik on lik.status_id = stat.id where lik.status_id = stat.id group by status_id HAVING distance < 20');
+	all_looops = []; // this array will contain the result of our db query
+
+	trending_looop_in_that_location
+	.on('error', function(err) {
+		console.log(err);
+	})
+	.on('result', function(loops) {
+		all_looops.push(loops);
+	})
+	.on('end', function() {
+		io.to(socket_session_id).emit('trending_looop_in_that_location', {status : 1, message: "Looops Retrived Successfully", looops: all_looops});
 	});
 }
