@@ -7,8 +7,8 @@ var mysql = require('mysql'),
   connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-	password: 'h@shl000p',
-//    password: '',
+//	password: 'h@shl000p',
+    password: '',
     database: 'hashlooop',
     port: 3306
   });
@@ -141,7 +141,7 @@ updateUserLocation = function(data, socket_session_id){
 	//'+data.user_id+'
 	//SELECT id, user_id, status, ( 3959 * acos( cos( radians('+data.latitude+') ) * cos( radians( status_location_latitude ) ) * cos( radians( status_location_longitude ) - radians('+data.longitude+') ) + sin( radians('+data.latitude+') ) * sin( radians( status_location_latitude ) ) ) ) AS distance FROM status HAVING distance < 20
 	//SELECT stat.id, stat.user_id, user.name, stat.status, if((fol.user_id = stat.user_id and fol.following_id = '+data.user_id+'), 1, 0) AS relationship, ( 3959 * acos( cos( radians('+data.latitude+') ) * cos( radians( status_location_latitude ) ) * cos( radians( status_location_longitude ) - radians('+data.longitude+') ) + sin( radians('+data.latitude+') ) * sin( radians( status_location_latitude ) ) ) ) AS distance FROM status as stat LEFT JOIN following_mapping as fol on fol.user_id = stat.user_id LEFT JOIN users as user on user.id = stat.user_id
-	var looop_in_that_location = connection.query('SELECT stat.id, stat.user_id, user.name, stat.status, if((fol.user_id = stat.user_id and fol.following_id = '+data.user_id+'), true, false) AS relationship, ( 3959 * acos( cos( radians('+data.latitude+') ) * cos( radians( stat.status_location_latitude ) ) * cos( radians( stat.status_location_longitude ) - radians('+data.longitude+') ) + sin( radians('+data.latitude+') ) * sin( radians( stat.status_location_latitude ) ) ) ) AS distance FROM status as stat LEFT JOIN following_mapping as fol on fol.user_id = stat.user_id LEFT JOIN users as user on user.id = stat.user_id HAVING distance < 20');
+	var looop_in_that_location = connection.query('SELECT stat.id, stat.user_id, user.name, stat.status, if((fol.user_id = stat.user_id and fol.following_id = '+data.user_id+'), true, false) AS relationship, ( 3959 * acos( cos( radians('+data.latitude+') ) * cos( radians( stat.status_location_latitude ) ) * cos( radians( stat.status_location_longitude ) - radians('+data.longitude+') ) + sin( radians('+data.latitude+') ) * sin( radians( stat.status_location_latitude ) ) ) ) AS distance FROM status as stat LEFT JOIN following_mapping as fol on fol.user_id = stat.user_id LEFT JOIN users as user on user.id = stat.user_id HAVING distance < 500');
 	all_looops = []; // this array will contain the result of our db query
 
 	looop_in_that_location
@@ -159,7 +159,7 @@ updateUserLocation = function(data, socket_session_id){
 newStatus = function(data, socket_session_id){
 	
 	//SELECT id, user_id, status, ( 3959 * acos( cos( radians('+data.latitude+') ) * cos( radians( status_location_latitude ) ) * cos( radians( status_location_longitude ) - radians('+data.longitude+') ) + sin( radians('+data.latitude+') ) * sin( radians( status_location_latitude ) ) ) ) AS distance FROM status HAVING distance < 20
-	var check_looops_in_that_location = connection.query('SELECT id, user_id, status, ( 3959 * acos( cos( radians('+data.latitude+') ) * cos( radians( status_location_latitude ) ) * cos( radians( status_location_longitude ) - radians('+data.longitude+') ) + sin( radians('+data.latitude+') ) * sin( radians( status_location_latitude ) ) ) ) AS distance FROM status HAVING distance < 20');
+	var check_looops_in_that_location = connection.query('SELECT id, user_id, status, ( 3959 * acos( cos( radians('+data.latitude+') ) * cos( radians( status_location_latitude ) ) * cos( radians( status_location_longitude ) - radians('+data.longitude+') ) + sin( radians('+data.latitude+') ) * sin( radians( status_location_latitude ) ) ) ) AS distance FROM status HAVING distance < 500');
 	all_looops = []; // this array will contain the result of our db query
 
 	check_looops_in_that_location
@@ -255,7 +255,7 @@ newLike = function(data, socket_session_id){
 }
 
 function updateTrendingLooops(data, socket_session_id){
-	var trending_looop_in_that_location = connection.query('SELECT stat.id as status_id, user.name, stat.status as status, stat.user_id as user_id, ( 3959 * acos( cos( radians('+data.latitude+') ) * cos( radians( stat.status_location_latitude ) ) * cos( radians( stat.status_location_longitude ) - radians('+data.longitude+') ) + sin( radians('+data.latitude+') ) * sin( radians( stat.status_location_latitude ) ) ) ) AS distance FROM status as stat LEFT JOIN likes as lik on lik.status_id = stat.id LEFT JOIN users as user on user.id = stat.user_id where lik.status_id = stat.id group by status_id HAVING distance < 20');
+	var trending_looop_in_that_location = connection.query('SELECT stat.id as status_id, user.name, stat.status as status, stat.user_id as user_id, ( 3959 * acos( cos( radians('+data.latitude+') ) * cos( radians( stat.status_location_latitude ) ) * cos( radians( stat.status_location_longitude ) - radians('+data.longitude+') ) + sin( radians('+data.latitude+') ) * sin( radians( stat.status_location_latitude ) ) ) ) AS distance FROM status as stat LEFT JOIN likes as lik on lik.status_id = stat.id LEFT JOIN users as user on user.id = stat.user_id where lik.status_id = stat.id group by status_id HAVING distance < 500');
 	all_looops = []; // this array will contain the result of our db query
 
 	trending_looop_in_that_location
