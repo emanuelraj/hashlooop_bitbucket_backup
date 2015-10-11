@@ -30,6 +30,7 @@ io.on('connection', function(socket){
 	
 	
 	socket.on('fetch_feed_looops', function (data) {
+		console.log(data);
 		updateUserLocation(JSON.parse(data), socket.id);
 	});
 	
@@ -41,6 +42,7 @@ io.on('connection', function(socket){
 	
 	
 	socket.on('fetch_trending_looops', function (data){
+		console.log(data);
 		updateTrendingLooops(JSON.parse(data), socket.id);
 	});
 	
