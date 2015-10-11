@@ -255,6 +255,8 @@ newLike = function(data, socket_session_id){
 }
 
 function updateTrendingLooops(data, socket_session_id){
+	console.log("Latitude"+data.latitude);
+	console.log("Longitude"+data.longitude);
 	var trending_looop_in_that_location = connection.query('SELECT stat.id as status_id, user.name, stat.status as status, stat.user_id as user_id, ( 3959 * acos( cos( radians('+data.latitude+') ) * cos( radians( stat.status_location_latitude ) ) * cos( radians( stat.status_location_longitude ) - radians('+data.longitude+') ) + sin( radians('+data.latitude+') ) * sin( radians( stat.status_location_latitude ) ) ) ) AS distance FROM status as stat LEFT JOIN likes as lik on lik.status_id = stat.id LEFT JOIN users as user on user.id = stat.user_id where lik.status_id = stat.id group by status_id HAVING distance < 500');
 	all_looops = []; // this array will contain the result of our db query
 
