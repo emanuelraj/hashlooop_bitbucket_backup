@@ -268,7 +268,7 @@ function updateTrendingLooops(data, socket_session_id){
 		all_looops.push(loops);
 	})
 	.on('end', function() {
-		console.log(all_looops/0;
+		console.log(all_looops);
 		io.to(socket_session_id).emit('trending_looop_in_that_location', {status : 1, message: "Looops Retrived Successfully", looops: all_looops});
 	});
 }
