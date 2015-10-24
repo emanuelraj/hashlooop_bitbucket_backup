@@ -310,7 +310,7 @@ function newImageLooops(data, socket_session_id){
 
 	  if(er) console.log(er);
 
-	  file_path = __dirname + "/images/u_"+user_id+"_"+timestamp+".jpeg";
+	  file_path = __dirname + "/images/u_"+data.user_id+"_"+timestamp+".jpeg";
 	  fs.writeFileSync(file_path,bitmap);
 
 	});
