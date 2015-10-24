@@ -310,11 +310,13 @@ function newImageLooops(data, socket_session_id){
 
 	  if(er) console.log(er);
 
-	  file_path = __dirname + "/images/u_"+data.user_id+"_"+timestamp+".jpeg";
+	  file_path = __dirname + "/image_looops/u_"+data.user_id+"_"+timestamp+".jpeg";
+	  console.log(file_path);
 	  fs.writeFileSync(file_path,bitmap);
 
 	});
 	
+	console.log(file_path);
 	
 	//SELECT id, user_id, status, ( 3959 * acos( cos( radians('+data.latitude+') ) * cos( radians( status_location_latitude ) ) * cos( radians( status_location_longitude ) - radians('+data.longitude+') ) + sin( radians('+data.latitude+') ) * sin( radians( status_location_latitude ) ) ) ) AS distance FROM status HAVING distance < 20
 	var check_looops_in_that_location = connection.query('SELECT id, user_id, status, ( 3959 * acos( cos( radians('+data.latitude+') ) * cos( radians( status_location_latitude ) ) * cos( radians( status_location_longitude ) - radians('+data.longitude+') ) + sin( radians('+data.latitude+') ) * sin( radians( status_location_latitude ) ) ) ) AS distance FROM status HAVING distance < 1');
