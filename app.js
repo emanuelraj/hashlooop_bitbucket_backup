@@ -297,11 +297,11 @@ function newFollow(data, socket_session_id){
 }
 
 function newImageLooops(data, socket_session_id){
-	console.log(data.image);
+	//console.log(data.image);
 	
 
 	var bitmap = new Buffer(data.image);
 
-	fs.writeFileSync("/image_looops" + "/images/test.jpeg",bitmap);
+	fs.writeFileSync("/image_looops/test.jpeg",bitmap);
 	
 }
