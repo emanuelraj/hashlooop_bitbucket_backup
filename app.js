@@ -305,17 +305,19 @@ function newImageLooops(data, socket_session_id){
 
 	var timestamp = new Date().getTime().toString();
 	var file_path;
+	var return_path = "http://ec2-54-254-235-212.ap-southeast-1.compute.amazonaws.com/hashlooop/image_looops/";
+	var image_name = "u_"+data.user_id+"_"+timestamp;
 	mkdirp(__dirname + "/image_looops/",function(er)
 	{
 
 	  if(er) console.log(er);
 
-	  file_path = __dirname + "/image_looops/u_"+data.user_id+"_"+timestamp+".jpeg";
-	  console.log(file_path);
-	  fs.writeFileSync(file_path,bitmap);
+	  //file_path = ;
+	  //console.log(file_path);
+	  fs.writeFileSync(__dirname + "/image_looops/"+image_name+".jpeg",bitmap);
 
 	});
-	
+	file_path = return_path + image_name;
 	console.log(file_path);
 	
 	//SELECT id, user_id, status, ( 3959 * acos( cos( radians('+data.latitude+') ) * cos( radians( status_location_latitude ) ) * cos( radians( status_location_longitude ) - radians('+data.longitude+') ) + sin( radians('+data.latitude+') ) * sin( radians( status_location_latitude ) ) ) ) AS distance FROM status HAVING distance < 20
