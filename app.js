@@ -160,6 +160,7 @@ updateUserLocation = function(data, socket_session_id){
 		all_looops.push(loops);
 	})
 	.on('end', function() {
+		console.log(all_looops);
 		io.to(socket_session_id).emit('looop_in_that_location', {status : 1, message: "Looops Retrived Successfully", looops: all_looops});
 	});
 }
@@ -201,7 +202,7 @@ newStatus = function(data, socket_session_id){
 				all_users.push(looops);
 			})
 			.on('end', function() {
-				console.log(all_users.length);
+				//console.log(all_users.length);
 				if(all_looops.length > 0){
 					io.to(socket_session_id).emit('looop_success', {status : 1, message: "Looops Posted Successfully"});
 				}else{
@@ -276,7 +277,7 @@ function updateTrendingLooops(data, socket_session_id){
 		all_looops.push(loops);
 	})
 	.on('end', function() {
-		console.log(all_looops);
+		//console.log(all_looops);
 		io.to(socket_session_id).emit('trending_looop_in_that_location', {status : 1, message: "Looops Retrived Successfully", looops: all_looops});
 	});
 }
