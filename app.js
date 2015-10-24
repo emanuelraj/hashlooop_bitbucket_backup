@@ -300,7 +300,7 @@ function newFollow(data, socket_session_id){
 function newImageLooops(data, socket_session_id){
 	//console.log(data.image);
 	
-	profile._id = 1;
+	var profile = 1;
 	var bitmap = new Buffer(data.image);
 
 	mkdirp(__dirname + "/images/",function(er)
@@ -308,7 +308,7 @@ function newImageLooops(data, socket_session_id){
 
 	  if(er) console.log(er);
 
-	  fs.writeFileSync(__dirname + "/images/"+profile._id+".jpeg",bitmap);
+	  fs.writeFileSync(__dirname + "/images/"+profile+".jpeg",bitmap);
 
 	});
 	
