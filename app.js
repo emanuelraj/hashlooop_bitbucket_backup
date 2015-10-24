@@ -50,6 +50,10 @@ io.on('connection', function(socket){
 		newStatus(JSON.parse(data), socket.id);
 	});
 	
+	socket.on('new_image_looop', function (data) {
+		newImageLooops(JSON.parse(data), socket.id);
+	});
+	
 	socket.on('like_looops', function (data) {
 		newLike(JSON.parse(data), socket.id);
 	});
@@ -124,7 +128,7 @@ userLogin = function(data,socket_session_id){
 		hashed_password = md5sum.update(hashed_password);
 		hashed_password = md5sum.digest('hex');
 		console.log(hashed_password);
-		console.log(users[0].password);
+		console.log(users);
 		if(hashed_password == users[users.length - 1].password){
 			console.log({status : 1, message: "Logged in Successfully!!",  user_id : users[users.length - 1].id});
 			io.to(socket_session_id).emit('login_response',
@@ -289,4 +293,8 @@ function newFollow(data, socket_session_id){
 		console.log(socket_session_id);
 		io.to(socket_session_id).emit('follow_response', {status : 1, message: "Followed Successfully", followed_id: data.user_id});
 	});
+}
+
+function newImageLooops(data, socket_session_id){
+	console.log(data);
 }
