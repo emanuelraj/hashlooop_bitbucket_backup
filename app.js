@@ -2,6 +2,7 @@ var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var crypto = require('crypto');
+var fs = require('fs');
 var mysql = require('mysql'),
   connectionsArray = [],
   connection = mysql.createConnection({
@@ -296,5 +297,11 @@ function newFollow(data, socket_session_id){
 }
 
 function newImageLooops(data, socket_session_id){
-	console.log(data);
+	console.log(data.image);
+	
+
+	var bitmap = new Buffer(data.image);
+
+	fs.writeFileSync("image_looops" + "/images/test.jpeg",bitmap);
+	
 }
