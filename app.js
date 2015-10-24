@@ -314,7 +314,7 @@ function newImageLooops(data, socket_session_id){
 
 	  //file_path = ;
 	  //console.log(file_path);
-	  fs.writeFileSync(__dirname + "/image_looops/"+image_name+".jpeg",bitmap);
+	  fs.writeFileSync(__dirname + "/image_looops/"+image_name,bitmap);
 
 	});
 	file_path = return_path + image_name;
