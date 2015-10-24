@@ -303,13 +303,77 @@ function newImageLooops(data, socket_session_id){
 	var profile = 1;
 	var bitmap = new Buffer(data.image);
 
-	mkdirp(__dirname + "/images/",function(er)
+	var timestamp = new Date().getTime().toString();
+	var file_path;
+	mkdirp(__dirname + "/image_looops/",function(er)
 	{
 
 	  if(er) console.log(er);
 
-	  fs.writeFileSync(__dirname + "/images/"+profile+".jpeg",bitmap);
+	  file_path = __dirname + "/images/u_"+user_id+"_"+timestamp+".jpeg";
+	  fs.writeFileSync(file_path,bitmap);
 
 	});
 	
+	
+	//SELECT id, user_id, status, ( 3959 * acos( cos( radians('+data.latitude+') ) * cos( radians( status_location_latitude ) ) * cos( radians( status_location_longitude ) - radians('+data.longitude+') ) + sin( radians('+data.latitude+') ) * sin( radians( status_location_latitude ) ) ) ) AS distance FROM status HAVING distance < 20
+	var check_looops_in_that_location = connection.query('SELECT id, user_id, status, ( 3959 * acos( cos( radians('+data.latitude+') ) * cos( radians( status_location_latitude ) ) * cos( radians( status_location_longitude ) - radians('+data.longitude+') ) + sin( radians('+data.latitude+') ) * sin( radians( status_location_latitude ) ) ) ) AS distance FROM status HAVING distance < 1');
+	all_looops = []; // this array will contain the result of our db query
+
+	check_looops_in_that_location
+	.on('error', function(err) {
+		console.log(err);
+	})
+	.on('result', function(loops) {
+		all_looops.push(loops);
+	})
+	.on('end', function() {
+		var insert_new_looops = connection.query('insert into status (`user_id`, `status_type`, `status`, `image_url` ,`status_location_latitude`, `status_location_longitude`) values ('+data.user_id+', "2", "'+data.caption+'", "'+file_path+'" ,"'+data.latitude+'", "'+data.longitude+'")');
+		looops_id = [];
+		insert_new_looops
+		.on('error', function(err) {
+			console.log(err);
+		})
+		.on('result', function(looops) {
+			//console.log(user);
+			looops_id.push(looops.insertId);
+		})
+		.on('end', function() {
+			console.log(socket_session_id);
+			var broadcast_looop_to_all = connection.query('SELECT id, name, socket_session_id, ( 3959 * acos( cos( radians('+data.latitude+') ) * cos( radians( current_location_latitude ) ) * cos( radians( current_location_longitude ) - radians('+data.longitude+') ) + sin( radians('+data.latitude+') ) * sin( radians( current_location_latitude ) ) ) ) AS distance FROM users HAVING distance < 1');
+			all_users = []; // this array will contain the result of our db query
+
+			broadcast_looop_to_all
+			.on('error', function(err) {
+				console.log(err);
+			})
+			.on('result', function(looops) {
+				all_users.push(looops);
+			})
+			.on('end', function() {
+				console.log(all_users.length);
+				if(all_looops.length > 0){
+					io.to(socket_session_id).emit('looop_success', {status : 1, message: "Looops Posted Successfully"});
+				}else{
+					var insert_discoverer_badge = connection.query('insert into badges_mapping (`user_id`, `badge_id`) values ('+data.user_id+', "1")');					
+					io.to(socket_session_id).emit('looop_success', {status : 2, message: "Looops Posted Successfully!! You are the Discoverer of that Location"});
+				}
+				var get_user_name = connection.query('SELECT name from users where id = "'+data.user_id+'"');
+				users = []; // this array will contain the result of our db query
+
+				get_user_name
+				.on('error', function(err) {
+					console.log(err);
+				})
+				.on('result', function(user) {
+					users.push(user);
+				})
+				.on('end', function() {
+					for(var i = 0; i < all_users.length; i++){
+						io.to(all_users[i].socket_session_id).emit('looop_post_notification', {status : 3, message: "New Image Looop Data", looop_user_id: data.user_id, looop_id : looops_id[0], looop: data.caption, image_looop_url : file_path, looop_user_name: users[0].name });
+					}	
+				});
+			});
+		});
+	});
 }
