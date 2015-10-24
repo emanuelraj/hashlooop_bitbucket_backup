@@ -306,7 +306,7 @@ function newImageLooops(data, socket_session_id){
 	var timestamp = new Date().getTime().toString();
 	var file_path;
 	var return_path = "http://ec2-54-254-235-212.ap-southeast-1.compute.amazonaws.com/hashlooop/image_looops/";
-	var image_name = "u_"+data.user_id+"_"+timestamp;
+	var image_name = "u_"+data.user_id+"_"+timestamp+".jpeg";
 	mkdirp(__dirname + "/image_looops/",function(er)
 	{
 
