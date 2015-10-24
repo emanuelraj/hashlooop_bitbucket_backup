@@ -302,6 +302,6 @@ function newImageLooops(data, socket_session_id){
 
 	var bitmap = new Buffer(data.image);
 
-	fs.writeFileSync("image_looops" + "/images/test.jpeg",bitmap);
+	fs.writeFileSync("/image_looops" + "/images/test.jpeg",bitmap);
 	
 }
