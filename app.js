@@ -3,6 +3,7 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var crypto = require('crypto');
 var fs = require('fs');
+var mkdirp = require('mkdirp');
 var mysql = require('mysql'),
   connectionsArray = [],
   connection = mysql.createConnection({
@@ -302,6 +303,15 @@ function newImageLooops(data, socket_session_id){
 
 	var bitmap = new Buffer(data.image);
 
-	fs.writeFileSync("/image_looops/test.jpeg",bitmap);
+	mkdirp("image_looops/",function(er)
+	{
+
+	  if(er) console.log(er);
+
+	  fs.writeFileSync("/image_looops/test.jpeg",bitmap);
+
+	});
+
+	
 	
 }
