@@ -28,7 +28,7 @@ var job = new CronJob({
 		users.push(user);
 	})
 	.on('end', function() {
-		//console.log(users);
+		console.log(users);
 		console.log("Cron Job");
 	});
   },
