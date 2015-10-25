@@ -10,7 +10,7 @@ var mysql = require('mysql'),
     port: 3306
   });
 var job = new CronJob({
-  cronTime: '0 */2 * * * *',
+  cronTime: '0 0 */4 * * *',
   onTick: function() {
     /*
      * Runs every weekday (Monday through Friday)
