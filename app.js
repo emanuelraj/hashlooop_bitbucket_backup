@@ -382,3 +382,13 @@ function newImageLooops(data, socket_session_id){
 		});
 	});
 }
+
+
+process.on('uncaughtException', function (err) {
+ fs.appendFile("./server_err.log", ((new Date) + err.stack), function(err) {
+  if(err){
+   console.log(err);
+  }
+ });
+ console.log(err.message);
+});
