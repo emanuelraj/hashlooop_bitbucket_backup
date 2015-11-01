@@ -149,7 +149,16 @@ updateUserLocation = function(data, socket_session_id){
 	//'+data.user_id+'
 	//SELECT id, user_id, status, ( 3959 * acos( cos( radians('+data.latitude+') ) * cos( radians( status_location_latitude ) ) * cos( radians( status_location_longitude ) - radians('+data.longitude+') ) + sin( radians('+data.latitude+') ) * sin( radians( status_location_latitude ) ) ) ) AS distance FROM status HAVING distance < 20
 	//SELECT stat.id, stat.user_id, user.name, stat.status, if((fol.user_id = stat.user_id and fol.following_id = '+data.user_id+'), 1, 0) AS relationship, ( 3959 * acos( cos( radians('+data.latitude+') ) * cos( radians( status_location_latitude ) ) * cos( radians( status_location_longitude ) - radians('+data.longitude+') ) + sin( radians('+data.latitude+') ) * sin( radians( status_location_latitude ) ) ) ) AS distance FROM status as stat LEFT JOIN following_mapping as fol on fol.user_id = stat.user_id LEFT JOIN users as user on user.id = stat.user_id
-	var looop_in_that_location = connection.query('SELECT stat.id as looop_id, stat.status_type, stat.image_url, DATE_FORMAT(stat.created_at, "%Y-%m-%d %H:%i:%S") as posted_time, stat.user_id, user.name, stat.status, @total_likes:=(SELECT COUNT(*) FROM likes where status_id = stat.id ) AS `total_likes`, if((lik.status_id = stat.id and lik.user_id = '+data.user_id+'), true, false) AS like_status , if((fol.user_id = stat.user_id and fol.following_id = '+data.user_id+'), true, false) AS relationship, ( 6371 * acos( cos( radians('+data.latitude+') ) * cos( radians( stat.status_location_latitude ) ) * cos( radians( stat.status_location_longitude ) - radians('+data.longitude+') ) + sin( radians('+data.latitude+') ) * sin( radians( stat.status_location_latitude ) ) ) ) AS distance FROM status as stat LEFT JOIN following_mapping as fol on fol.user_id = stat.user_id LEFT JOIN likes as lik on lik.status_id = stat.id LEFT JOIN users as user on user.id = stat.user_id group by looop_id HAVING distance < 1000');
+	var radius = 5;
+	var looops_result;
+	looops_result = dynamically_expand_radius(data, radius);
+	console.log(looops_result);
+	//if ()
+}
+
+dynamically_expand_radius = function(data, radius){
+		
+	var looop_in_that_location = connection.query('SELECT stat.id as looop_id, stat.status_type, stat.image_url, DATE_FORMAT(stat.created_at, "%Y-%m-%d %H:%i:%S") as posted_time, stat.user_id, user.name, stat.status, @total_likes:=(SELECT COUNT(*) FROM likes where status_id = stat.id ) AS `total_likes`, if((lik.status_id = stat.id and lik.user_id = '+data.user_id+'), true, false) AS like_status , if((fol.user_id = stat.user_id and fol.following_id = '+data.user_id+'), true, false) AS relationship, ( 6371 * acos( cos( radians('+data.latitude+') ) * cos( radians( stat.status_location_latitude ) ) * cos( radians( stat.status_location_longitude ) - radians('+data.longitude+') ) + sin( radians('+data.latitude+') ) * sin( radians( stat.status_location_latitude ) ) ) ) AS distance FROM status as stat LEFT JOIN following_mapping as fol on fol.user_id = stat.user_id LEFT JOIN likes as lik on lik.status_id = stat.id LEFT JOIN users as user on user.id = stat.user_id group by looop_id HAVING distance < '+radius+'');
 	all_looops = []; // this array will contain the result of our db query
 
 	looop_in_that_location
@@ -161,9 +170,13 @@ updateUserLocation = function(data, socket_session_id){
 	})
 	.on('end', function() {
 		console.log(all_looops);
-		io.to(socket_session_id).emit('looop_in_that_location', {status : 1, message: "Looops Retrived Successfully", looops: all_looops});
+		return all_looops;
+		//io.to(socket_session_id).emit('looop_in_that_location', {status : 1, message: "Looops Retrived Successfully", looops: all_looops});
 	});
+	
 }
+
+
 
 newStatus = function(data, socket_session_id){
 	
