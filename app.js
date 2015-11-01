@@ -178,6 +178,7 @@ dynamically_expand_radius = function(data, radius , callback){
 		//return callback(all_looops);
 		if(all_looops.lenght < 10){
 			radius = radius + 5;
+			console.log("New Radius" + radius);
 			dynamically_expand_radius(data, radius , callback);
 		}else{
 			return callback(all_looops);
