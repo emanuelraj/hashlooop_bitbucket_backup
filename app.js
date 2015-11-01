@@ -169,7 +169,7 @@ dynamically_expand_radius = function(data, radius){
 		all_looops.push(loops);
 	})
 	.on('end', function() {
-		console.log(all_looops);
+		console.log("Return Looops");
 		return all_looops;
 		//io.to(socket_session_id).emit('looop_in_that_location', {status : 1, message: "Looops Retrived Successfully", looops: all_looops});
 	});
