@@ -153,7 +153,7 @@ updateUserLocation = function(data, socket_session_id){
 	var looops_result;
 	looops_result = dynamically_expand_radius(data, radius, function(response){
 		// Here you have access to your variable
-		console.log(response);
+		console.log(response.length);
 	})
 	//console.log(looops_result);
 	//if ()
