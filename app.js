@@ -159,6 +159,7 @@ updateUserLocation = function(data, socket_session_id){
 			looop_id_array.push(all_looops[i].looop_id);
 		}  
 		console.log(Math.min.apply(null, looop_id_array));
+		console.log(Math.max.apply(null, looop_id_array));
 		io.to(socket_session_id).emit('looop_in_that_location', {status : 1, message: "Looops Retrived Successfully", looops: all_looops});
 	})
 	
