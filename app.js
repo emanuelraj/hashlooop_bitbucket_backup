@@ -153,10 +153,10 @@ updateUserLocation = function(data, socket_session_id){
 	var looops_result;
 	looops_result = dynamically_expand_radius(data, radius, function(all_looops, radius){
 		// Here you have access to your variable
-		console.log(radius);
+		console.log(all_looops);
 		/* for(var i = 0; i < all_looops.length; i++){
 			
-		} */
+		} */ 
 		io.to(socket_session_id).emit('looop_in_that_location', {status : 1, message: "Looops Retrived Successfully", looops: all_looops});
 	})
 	
