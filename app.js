@@ -151,9 +151,12 @@ updateUserLocation = function(data, socket_session_id){
 	//SELECT stat.id, stat.user_id, user.name, stat.status, if((fol.user_id = stat.user_id and fol.following_id = '+data.user_id+'), 1, 0) AS relationship, ( 3959 * acos( cos( radians('+data.latitude+') ) * cos( radians( status_location_latitude ) ) * cos( radians( status_location_longitude ) - radians('+data.longitude+') ) + sin( radians('+data.latitude+') ) * sin( radians( status_location_latitude ) ) ) ) AS distance FROM status as stat LEFT JOIN following_mapping as fol on fol.user_id = stat.user_id LEFT JOIN users as user on user.id = stat.user_id
 	var radius = 5;
 	var looops_result;
-	looops_result = dynamically_expand_radius(data, radius, function(all_looops){
+	looops_result = dynamically_expand_radius(data, radius, function(all_looops, radius){
 		// Here you have access to your variable
-		console.log(all_looops.length);
+		console.log(radius);
+		/* for(var i = 0; i < all_looops.length; i++){
+			
+		} */
 		io.to(socket_session_id).emit('looop_in_that_location', {status : 1, message: "Looops Retrived Successfully", looops: all_looops});
 	})
 	
@@ -181,7 +184,7 @@ dynamically_expand_radius = function(data, radius , callback){
 			console.log("New Radius" + radius);
 			dynamically_expand_radius(data, radius , callback);
 		}else{
-			return callback(all_looops);
+			return callback(all_looops , radius);
 		}
 		//
 	});
