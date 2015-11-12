@@ -36,6 +36,11 @@ io.on('connection', function(socket){
 		updateUserLocation(JSON.parse(data), socket.id);
 	});
 	
+	socket.on('fetch_old_pagination', function(data){
+		//console.log(data);
+		oldDataPagination(JSON.parse(data), socket.id);
+	});
+	
 	socket.on('socket_reconnect', function (data) {
 		data = JSON.parse(data);
 		var update_socket = connection.query('update users set `socket_session_id` =  "'+socket.id+'" where id = "'+data.user_id+'"');
