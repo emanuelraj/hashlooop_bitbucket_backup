@@ -170,6 +170,7 @@ updateUserLocation = function(data, socket_session_id){
 		for(var i = 0; i < all_looops.length; i++){
 			looop_id_array.push(all_looops[i].looop_id);
 		}  
+		console.log(looop_id_array);
 		io.to(socket_session_id).emit('looop_in_that_location', {status : 1, message: "Looops Retrived Successfully", looops: all_looops, min_id: Math.min.apply(null, looop_id_array), max_id:Math.max.apply(null, looop_id_array), current_radius: radius});
 	})
 }
