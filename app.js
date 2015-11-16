@@ -35,6 +35,7 @@ io.on('connection', function(socket){
 		console.log(data);
 		parsed_data = JSON.parse(data);
 		if(parsed_data.data_fetch_status == 0){
+			console.log("Get New Data");
 			updateUserLocation(parsed_data, socket.id);
 		}else if(parsed_data.data_fetch_status == 1){
 			fetchOldDataPagination(parsed_data, socket.id);
