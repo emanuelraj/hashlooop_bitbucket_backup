@@ -169,12 +169,16 @@ updateUserLocation = function(data, socket_session_id){
 		var looops_result;
 		looops_result = dynamically_expand_radius_for_zero_id(data, radius, duration, function(all_looops, radius){
 			// Here you have access to your variable
-			var looop_id_array = new Array();
-			for(var i = 0; i < all_looops.length; i++){
-				looop_id_array.push(all_looops[i].looop_id);
-			}  
-			console.log(looop_id_array);
-			io.to(socket_session_id).emit('looop_in_that_location', {status : 1, message: "Looops Retrived Successfully", looops: all_looops, min_id: Math.min.apply(null, looop_id_array), max_id:Math.max.apply(null, looop_id_array), current_radius: radius});
+			if(all_looops.length > 0){
+				var looop_id_array = new Array();
+				for(var i = 0; i < all_looops.length; i++){
+					looop_id_array.push(all_looops[i].looop_id);
+				}  
+				console.log(looop_id_array);
+				io.to(socket_session_id).emit('looop_in_that_location', {status : 1, message: "Looops Retrived Successfully", looops: all_looops, min_id: Math.min.apply(null, looop_id_array), max_id:Math.max.apply(null, looop_id_array), current_radius: radius});
+			}else{
+				io.to(socket_session_id).emit('looop_in_that_location', {status : 2, message: "No New Message", looops: all_looops, min_id: 0, max_id: 0, current_radius: radius});
+			}
 		})
 	}else{
 		var radius = 5;
@@ -182,12 +186,17 @@ updateUserLocation = function(data, socket_session_id){
 		var looops_result;
 		looops_result = dynamically_expand_radius(data, radius, function(all_looops, radius){
 			// Here you have access to your variable
-			var looop_id_array = new Array();
-			for(var i = 0; i < all_looops.length; i++){
-				looop_id_array.push(all_looops[i].looop_id);
-			}  
-			console.log(looop_id_array);
-			io.to(socket_session_id).emit('looop_in_that_location', {status : 1, message: "Looops Retrived Successfully", looops: all_looops, min_id: Math.min.apply(null, looop_id_array), max_id:Math.max.apply(null, looop_id_array), current_radius: radius});
+			if(all_looops.length > 0){
+				var looop_id_array = new Array();
+				for(var i = 0; i < all_looops.length; i++){
+					looop_id_array.push(all_looops[i].looop_id);
+				}  
+				console.log(looop_id_array);
+				io.to(socket_session_id).emit('looop_in_that_location', {status : 1, message: "Looops Retrived Successfully", looops: all_looops, min_id: Math.min.apply(null, looop_id_array), max_id:Math.max.apply(null, looop_id_array), current_radius: radius});
+				
+			}else{
+				io.to(socket_session_id).emit('looop_in_that_location', {status : 2, message: "No New Message", looops: all_looops, min_id: 0, max_id: 0, current_radius: radius});
+			}
 		})
 	}
 	
@@ -202,12 +211,16 @@ updateUserLocationForPagination = function(data, socket_session_id){
 	var looops_result;
 	looops_result = fetchOldDataPagination(data, radius, function(all_looops, radius){
 		// Here you have access to your variable
-		var looop_id_array = new Array();
-		for(var i = 0; i < all_looops.length; i++){
-			looop_id_array.push(all_looops[i].looop_id);
-		}  
-		console.log(looop_id_array);
-		io.to(socket_session_id).emit('looop_in_that_location', {status : 1, message: "Looops Retrived Successfully", looops: all_looops, min_id: Math.min.apply(null, looop_id_array), max_id:Math.max.apply(null, looop_id_array), current_radius: radius});
+		if(all_looops.length > 0){
+			var looop_id_array = new Array();
+			for(var i = 0; i < all_looops.length; i++){
+				looop_id_array.push(all_looops[i].looop_id);
+			}  
+			console.log(looop_id_array);
+			io.to(socket_session_id).emit('looop_in_that_location', {status : 1, message: "Looops Retrived Successfully", looops: all_looops, min_id: Math.min.apply(null, looop_id_array), max_id:Math.max.apply(null, looop_id_array), current_radius: radius});
+		}else{
+			io.to(socket_session_id).emit('looop_in_that_location', {status : 2, message: "No New Message", looops: all_looops, min_id: 0, max_id: 0, current_radius: radius});
+		}
 	})
 	
 }
@@ -219,12 +232,16 @@ updateUserLocationForNewData = function(data, socket_session_id){
 	var looops_result;
 	looops_result = fetchNewDataPagination(data, radius, function(all_looops, radius){
 		// Here you have access to your variable
-		var looop_id_array = new Array();
-		for(var i = 0; i < all_looops.length; i++){
-			looop_id_array.push(all_looops[i].looop_id);
-		}  
-		console.log(looop_id_array);
-		io.to(socket_session_id).emit('looop_in_that_location', {status : 1, message: "Looops Retrived Successfully", looops: all_looops, min_id: Math.min.apply(null, looop_id_array), max_id:Math.max.apply(null, looop_id_array), current_radius: radius});
+		if(all_looops.length > 0){
+			var looop_id_array = new Array();
+			for(var i = 0; i < all_looops.length; i++){
+				looop_id_array.push(all_looops[i].looop_id);
+			}  
+			console.log(looop_id_array);
+			io.to(socket_session_id).emit('looop_in_that_location', {status : 1, message: "Looops Retrived Successfully", looops: all_looops, min_id: Math.min.apply(null, looop_id_array), max_id:Math.max.apply(null, looop_id_array), current_radius: radius});
+		}else{
+			io.to(socket_session_id).emit('looop_in_that_location', {status : 2, message: "No New Message", looops: all_looops, min_id: 0, max_id: 0, current_radius: radius});
+		}
 	})
 	
 }
