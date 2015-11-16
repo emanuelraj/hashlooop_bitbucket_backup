@@ -252,7 +252,6 @@ dynamically_expand_radius = function(data, radius , callback){
 			}
 			console.log("New Radius" + radius);
 			dynamically_expand_radius(data, radius , callback);
-			return callback(all_looops , radius);
 		}else{
 			return callback(all_looops , radius);
 		}
