@@ -32,7 +32,7 @@ io.on('connection', function(socket){
 	
 	
 	socket.on('fetch_feed_looops', function (data) {
-	/* 	console.log(data);
+		console.log(data);
 		parsed_data = JSON.parse(data);
 		if(parsed_data.data_fetch_status == 0){
 			updateUserLocation(parsed_data, socket.id);
@@ -40,8 +40,8 @@ io.on('connection', function(socket){
 			fetchOldDataPagination(parsed_data, socket.id);
 		}else if(parsed_data.data_fetch_status == 2){
 			fetchNewDataPagination(parsed_data, socket.id);
-		} */
-		updateUserLocation(JSON.parse(data), socket.id);
+		} 
+	//	updateUserLocation(JSON.parse(data), socket.id);
 	});
 	
 	socket.on('fetch_old_pagination', function(data){
