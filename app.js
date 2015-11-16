@@ -175,9 +175,9 @@ updateUserLocation = function(data, socket_session_id){
 					looop_id_array.push(all_looops[i].looop_id);
 				}  
 				console.log(looop_id_array);
-				io.to(socket_session_id).emit('looop_in_that_location', {status : 1, message: "Looops Retrived Successfully", looops: all_looops, min_id: Math.min.apply(null, looop_id_array), max_id:Math.max.apply(null, looop_id_array), current_radius: radius});
+				io.to(socket_session_id).emit('looop_in_that_location', {status : 1, response_for: 0, message: "Looops Retrived Successfully", looops: all_looops, min_id: Math.min.apply(null, looop_id_array), max_id:Math.max.apply(null, looop_id_array), current_radius: radius});
 			}else{
-				io.to(socket_session_id).emit('looop_in_that_location', {status : 2, message: "No New Message", looops: all_looops, min_id: 0, max_id: 0, current_radius: radius});
+				io.to(socket_session_id).emit('looop_in_that_location', {status : 2, response_for: 0, message: "No New Message", looops: all_looops, min_id: 0, max_id: 0, current_radius: radius});
 			}
 		})
 	}else{
@@ -192,10 +192,10 @@ updateUserLocation = function(data, socket_session_id){
 					looop_id_array.push(all_looops[i].looop_id);
 				}  
 				console.log(looop_id_array);
-				io.to(socket_session_id).emit('looop_in_that_location', {status : 1, message: "Looops Retrived Successfully", looops: all_looops, min_id: Math.min.apply(null, looop_id_array), max_id:Math.max.apply(null, looop_id_array), current_radius: radius});
+				io.to(socket_session_id).emit('looop_in_that_location', {status : 1, response_for: 0, message: "Looops Retrived Successfully", looops: all_looops, min_id: Math.min.apply(null, looop_id_array), max_id:Math.max.apply(null, looop_id_array), current_radius: radius});
 				
 			}else{
-				io.to(socket_session_id).emit('looop_in_that_location', {status : 2, message: "No New Message", looops: all_looops, min_id: 0, max_id: 0, current_radius: radius});
+				io.to(socket_session_id).emit('looop_in_that_location', {status : 2, response_for: 0, message: "No New Message", looops: all_looops, min_id: 0, max_id: 0, current_radius: radius});
 			}
 		})
 	}
@@ -205,7 +205,6 @@ updateUserLocation = function(data, socket_session_id){
 updateUserLocationForPagination = function(data, socket_session_id){
 	var update_location = connection.query('update users set `current_location_latitude` = '+data.latitude+', `current_location_longitude` = '+data.longitude+', `socket_session_id` =  "'+socket_session_id+'" where id = "'+data.user_id+'"');
 
-	
 	var radius = 5;
 	//var duration = 2;
 	var looops_result;
@@ -217,9 +216,9 @@ updateUserLocationForPagination = function(data, socket_session_id){
 				looop_id_array.push(all_looops[i].looop_id);
 			}  
 			console.log(looop_id_array);
-			io.to(socket_session_id).emit('looop_in_that_location', {status : 1, message: "Looops Retrived Successfully", looops: all_looops, min_id: Math.min.apply(null, looop_id_array), max_id:Math.max.apply(null, looop_id_array), current_radius: radius});
+			io.to(socket_session_id).emit('looop_in_that_location', {status : 1, response_for: 1, message: "Looops Retrived Successfully", looops: all_looops, min_id: Math.min.apply(null, looop_id_array), max_id:Math.max.apply(null, looop_id_array), current_radius: radius});
 		}else{
-			io.to(socket_session_id).emit('looop_in_that_location', {status : 2, message: "No New Message", looops: all_looops, min_id: 0, max_id: 0, current_radius: radius});
+			io.to(socket_session_id).emit('looop_in_that_location', {status : 2, response_for: 1, message: "No New Message", looops: all_looops, min_id: 0, max_id: 0, current_radius: radius});
 		}
 	})
 	
@@ -238,9 +237,9 @@ updateUserLocationForNewData = function(data, socket_session_id){
 				looop_id_array.push(all_looops[i].looop_id);
 			}  
 			console.log(looop_id_array);
-			io.to(socket_session_id).emit('looop_in_that_location', {status : 1, message: "Looops Retrived Successfully", looops: all_looops, min_id: Math.min.apply(null, looop_id_array), max_id:Math.max.apply(null, looop_id_array), current_radius: radius});
+			io.to(socket_session_id).emit('looop_in_that_location', {status : 1, response_for: 2, message: "Looops Retrived Successfully", looops: all_looops, min_id: Math.min.apply(null, looop_id_array), max_id:Math.max.apply(null, looop_id_array), current_radius: radius});
 		}else{
-			io.to(socket_session_id).emit('looop_in_that_location', {status : 2, message: "No New Message", looops: all_looops, min_id: 0, max_id: 0, current_radius: radius});
+			io.to(socket_session_id).emit('looop_in_that_location', {status : 2, response_for: 2, message: "No New Message", looops: all_looops, min_id: 0, max_id: 0, current_radius: radius});
 		}
 	})
 	
