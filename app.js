@@ -249,9 +249,9 @@ dynamically_expand_radius = function(data, radius , callback){
 				dynamically_expand_radius_for_zero_id(data, radius , duration, callback);
 			}else{
 				radius = radius + 5;
+				console.log("New Radius" + radius);
+				dynamically_expand_radius(data, radius , callback);
 			}
-			console.log("New Radius" + radius);
-			dynamically_expand_radius(data, radius , callback);
 		}else{
 			return callback(all_looops , radius);
 		}
