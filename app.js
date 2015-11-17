@@ -139,20 +139,24 @@ userLogin = function(data,socket_session_id){
 	})
 	.on('end', function() {
 		console.log(users.length);
-		var md5sum = crypto.createHash('md5');
-		var hashed_password = data.password;
-		hashed_password = md5sum.update(hashed_password);
-		hashed_password = md5sum.digest('hex');
-		console.log(hashed_password);
-		console.log(users);
-		if(hashed_password == users[users.length - 1].password){
-			console.log({status : 1, message: "Logged in Successfully!!",  user_id : users[users.length - 1].id});
-			io.to(socket_session_id).emit('login_response',
-			{status : 1, message: "Logged in Successfully!!",  user_id : users[users.length - 1].id});
+		if(users.length > 0){
+			var md5sum = crypto.createHash('md5');
+			var hashed_password = data.password;
+			hashed_password = md5sum.update(hashed_password);
+			hashed_password = md5sum.digest('hex');
+			console.log(hashed_password);
+			console.log(users);
+			if(hashed_password == users[users.length - 1].password){
+				console.log({status : 1, message: "Logged in Successfully!!",  user_id : users[users.length - 1].id});
+				io.to(socket_session_id).emit('login_response',
+				{status : 1, message: "Logged in Successfully!!",  user_id : users[users.length - 1].id});
+			}else{
+				io.to(socket_session_id).emit('login_response', {status : 0, message: "Username or Password Wrong!!"});
+			}
 		}else{
-			io.to(socket_session_id).emit('login_response', {status : 0,
-			message: "Username or Password Wrong!!"});
-		}	
+			io.to(socket_session_id).emit('login_response', {status : 0, message: "Username or Password Wrong!!"});
+		}
+			
 	});
 }
 
