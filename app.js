@@ -148,13 +148,12 @@ userLogin = function(data,socket_session_id){
 			console.log(users);
 			if(hashed_password == users[users.length - 1].password){
 				console.log({status : 1, message: "Logged in Successfully!!",  user_id : users[users.length - 1].id});
-				io.to(socket_session_id).emit('login_response',
-				{status : 1, message: "Logged in Successfully!!",  user_id : users[users.length - 1].id});
+				io.to(socket_session_id).emit('login_response',{status : 1, message: "Logged in Successfully!!",  user_id : users[users.length - 1].id});
 			}else{
 				io.to(socket_session_id).emit('login_response', {status : 0, message: "Username or Password Wrong!!"});
 			}
 		}else{
-			io.to(socket_session_id).emit('login_response', {status : 0, message: "Username or Password Wrong!!"});
+			io.to(socket_session_id).emit('login_response', {status : 0, message: "Username Wrong!!"});
 		}
 			
 	});
